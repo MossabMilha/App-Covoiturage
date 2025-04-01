@@ -1,8 +1,6 @@
 #ifndef START_H
 #define START_H
 
-#include "login.h"
-#include "signup.h"
 
 #include <QMainWindow>
 

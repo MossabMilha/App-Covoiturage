@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SignUP</class>
+ <class>SignUp</class>
  <widget class="QWidget" name="SignUp">
   <property name="geometry">
    <rect>

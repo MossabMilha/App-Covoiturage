@@ -1,13 +1,17 @@
 #ifndef LOGIN_H
 #define LOGIN_H
+#include "encryption.h"
+#include "user.h"
+#include "passengerhomepage.h"
 
-#include <QDialog>
+#include <QWidget>
+#include <QMessageBox>
 
 namespace Ui {
 class LogIn;
 }
 
-class LogIn : public QDialog
+class LogIn : public QWidget
 {
     Q_OBJECT
 

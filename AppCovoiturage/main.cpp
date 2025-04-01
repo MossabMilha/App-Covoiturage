@@ -1,7 +1,7 @@
 #include "start.h"
-
 #include "login.h"
 #include "signup.h"
+
 #include "databasemanager.h"
 #include <QApplication>
 
