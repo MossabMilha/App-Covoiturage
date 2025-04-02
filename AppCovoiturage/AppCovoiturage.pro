@@ -12,11 +12,13 @@ SOURCES += \
     checkers.cpp \
     databasemanager.cpp \
     drivercreatetrip.cpp \
+    driverhistoryoftraject.cpp \
     driverhomepage.cpp \
     encryption.cpp \
     login.cpp \
     main.cpp \
     passengerhomepage.cpp \
+    search.cpp \
     signup.cpp \
     start.cpp \
     traject.cpp \
@@ -26,10 +28,12 @@ HEADERS += \
     checkers.h \
     databasemanager.h \
     drivercreatetrip.h \
+    driverhistoryoftraject.h \
     driverhomepage.h \
     encryption.h \
     login.h \
     passengerhomepage.h \
+    search.h \
     signup.h \
     start.h \
     traject.h \
@@ -37,6 +41,7 @@ HEADERS += \
 
 FORMS += \
     drivercreatetrip.ui \
+    driverhistoryoftraject.ui \
     driverhomepage.ui \
     login.ui \
     passengerhomepage.ui \

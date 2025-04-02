@@ -16,6 +16,82 @@ int Traject::getAvailableSeats() const { return available_seats; }
 double Traject::getPrice() const { return price; }
 std::string Traject::getCarModel() const { return car_model; }
 std::string Traject::getStatus() const { return status; }
+Traject Traject::getTrajectById(int TrajectId) {
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if (!db.isOpen()) {
+        qWarning() << "Database is not open!";
+        return {};  // Return an empty Traject object if the database is not open
+    }
+
+    QSqlQuery query(db);
+    query.prepare("SELECT id, driver_id, depart, destination, date_time, available_seats, price, car_model, status, created_at "
+                  "FROM trajects WHERE id = :id");
+    query.bindValue(":id", TrajectId);
+
+    if (!query.exec()) {
+        qWarning() << "Query execution failed:" << query.lastError().text();
+        return {};  // Return an empty Traject object if the query fails
+    }
+
+    if (query.next()) {
+        // Convert QString to std::string
+        Traject traject(
+            query.value("id").toInt(),
+            query.value("driver_id").toInt(),
+            query.value("depart").toString().toStdString(),
+            query.value("destination").toString().toStdString(),
+            query.value("date_time").toString().toStdString(),
+            query.value("available_seats").toInt(),
+            query.value("price").toDouble(),
+            query.value("car_model").toString().toStdString(),
+            query.value("status").toString().toStdString()
+            );
+
+        return traject;  // Return the populated Traject object
+    }
+
+    return {};  // Return an empty Traject object if no result is found
+}
+std::vector<Traject> Traject::getUserTrajects(int userId) {
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if (!db.isOpen()) {
+        qWarning() << "Database is not open!";
+        return {};
+    }
+
+    QSqlQuery query(db);
+    query.prepare("SELECT id, depart, destination, date_time, available_seats, price, car_model, status FROM trajects WHERE driver_id = :userId");
+    query.bindValue(":userId", userId);
+
+    std::vector<Traject> userTrajects;
+
+    if (!query.exec()) {
+        qDebug() << "Error fetching trajects for user:" << query.lastError().text();
+        return userTrajects;
+    }
+
+    while (query.next()) {
+        int id = query.value("id").toInt();
+        std::string depart = query.value("depart").toString().toStdString();
+        std::string destination = query.value("destination").toString().toStdString();
+        std::string date_time = query.value("date_time").toString().toStdString();
+        int available_seats = query.value("available_seats").toInt();
+        double price = query.value("price").toDouble();
+        std::string car_model = query.value("car_model").toString().toStdString();
+        std::string status = query.value("status").toString().toStdString();
+
+        Traject traject(id, userId, depart, destination, date_time, available_seats, price, car_model, status);
+        userTrajects.push_back(traject);
+    }
+
+    if (userTrajects.empty()) {
+        qDebug() << "No trajects found for user with ID:" << userId;
+    }
+
+    return userTrajects;
+}
 
 // Setters
 void Traject::setDepart(const std::string &newDepart) { depart = newDepart; }
@@ -58,17 +134,7 @@ bool Traject::isValid(QString* error) const
     }
 
     // // Check if the date is in the future
-    // QDateTime currentDateTime = QDateTime::currentDateTime();
-    // // Use the custom date format
-    // QDateTime tripDateTime = QDateTime::fromString(QString::fromStdString(date_time), "dd-MMM-yy h:mm AP");
 
-    // if (!tripDateTime.isValid()) {
-    //     *error += "Invalid date format.\n";
-    //     state = false;
-    // } else if (tripDateTime < currentDateTime) {
-    //     *error += "The trip date must be in the future.\n";
-    //     state = false;
-    // }
 
     return state;
 }

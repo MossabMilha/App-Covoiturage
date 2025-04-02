@@ -13,6 +13,14 @@ DriverHomePage::DriverHomePage(User* user, QWidget *parent)
         CreateTripPage->show();
         this->hide();
     });
+    connect(ui->HistoryOfTrajectButton, &QPushButton::clicked, this, [this,userId]() {
+        User user = User::getUserById(userId);
+        DriverHistoryOfTraject* HistoryTrajectPage = new DriverHistoryOfTraject(&user);
+        HistoryTrajectPage->show();
+        this->hide();
+    });
+
+
 }
 
 DriverHomePage::~DriverHomePage()

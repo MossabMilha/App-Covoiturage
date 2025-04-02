@@ -2,6 +2,7 @@
 #define DRIVERHOMEPAGE_H
 
 #include "drivercreatetrip.h"
+#include "driverhistoryoftraject.h"
 #include "user.h"
 
 #include <QWidget>

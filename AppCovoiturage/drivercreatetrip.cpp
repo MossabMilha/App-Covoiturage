@@ -16,10 +16,10 @@ DriverCreateTrip::DriverCreateTrip(User* user, QWidget *parent)
         // Capture user inputs
         QString startOfTrip = ui->StartOfTrip->currentText();
         QString destinationOfTrip = ui->DestinationOfTrip->currentText();
-        int availableSeats = ui->NombrePlaces->currentText().toInt(); // Assuming NombrePlaces holds numeric values
+        int availableSeats = ui->NombrePlaces->currentText().toInt();
         QString carModel = ui->carModelEdit->text();
         double price = ui->priceSpinBox->value();
-        QString dateTime = ui->dateTimeEdit->text();  // Date and time selected by the user
+        QString dateTime = ui->dateTimeEdit->text();
 
         qDebug() << dateTime;
 

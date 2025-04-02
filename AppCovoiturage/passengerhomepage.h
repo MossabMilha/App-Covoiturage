@@ -12,7 +12,7 @@
 #include <QFile>
 #include <QDialog>
 #include <QDate>
-
+#include "user.h"
 namespace Ui {
 class PassengerHomePage;
 }
@@ -22,22 +22,20 @@ class PassengerHomePage : public QWidget
     Q_OBJECT
 
 public:
-    explicit PassengerHomePage(QWidget *parent = nullptr);
+    explicit PassengerHomePage(User* user, QWidget *parent = nullptr);
     ~PassengerHomePage();
-private slots:
-    void on_profilButton_clicked();      // Fonction du bouton Profil
-    void on_deconnecterButton_clicked();
-    void onDateButtonClicked();
-    void onCalendarDateSelected(const QDate &date);
-    void onVilleChanged();
-    void onVilleArriveeChanged();
-    void onNombrePlacesChanged();
-    void on_appliquerButton_clicked();
+
 
 
 private:
     Ui::PassengerHomePage *ui;
-    void displayTheResult();
+    QStringList cities = {
+        "Amsterdam", "Athens", "Belgrade", "Berlin", "Bratislava", "Brussels", "Bucharest", "Budapest", "Chisinau", "Copenhagen",
+        "Dublin", "Helsinki", "Kiev", "Lisbon", "Ljubljana", "London", "Luxembourg", "Madrid", "Malta", "Minsk", "Monaco",
+        "Moscow", "Oslo", "Paris", "Podgorica", "Prague", "Reykjavik", "Riga", "Rome", "Sarajevo", "Skopje", "Sofia", "Stockholm",
+        "Tallinn", "Tirana", "Valletta", "Vienna", "Vilnius", "Warsaw", "Zagreb"
+    };
+    QStringList places = {"1","2","3","4"};
 };
 
 #endif // PASSENGERHOMEPAGE_H

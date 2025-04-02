@@ -26,6 +26,19 @@
     <string>CreateDrive</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="HistoryOfTrajectButton">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>140</y>
+     <width>151</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>History</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

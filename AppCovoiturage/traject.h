@@ -23,6 +23,9 @@ private:
     std::string status;
 
 public:
+    Traject()
+        : id(0), driver_id(0), depart(""), destination(""), date_time(""),
+        available_seats(0), price(0.0), car_model(""), status("pending") {}
     Traject(int id, int driver_id, std::string depart, std::string destination, std::string date_time,
             int available_seats, double price, std::string car_model, std::string status = "pending");
 
@@ -36,6 +39,8 @@ public:
     double getPrice() const;
     std::string getCarModel() const;
     std::string getStatus() const;
+    static Traject getTrajectById(int TrajectId);
+    static std::vector<Traject> getUserTrajects(int userId);
 
     // Setters
     void setDepart(const std::string &newDepart);
