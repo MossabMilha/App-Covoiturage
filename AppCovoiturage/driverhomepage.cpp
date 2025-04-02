@@ -6,8 +6,10 @@ DriverHomePage::DriverHomePage(User* user, QWidget *parent)
     , ui(new Ui::DriverHomePage)
 {
     ui->setupUi(this);
-    connect(ui->CreateDriveButton, &QPushButton::clicked, this, [=]() {
-        DriverCreateTrip* CreateTripPage = new DriverCreateTrip(user);
+    int userId = user->getId();
+    connect(ui->CreateDriveButton, &QPushButton::clicked, this, [this,userId]() {
+        User user = User::getUserById(userId);
+        DriverCreateTrip* CreateTripPage = new DriverCreateTrip(&user);
         CreateTripPage->show();
         this->hide();
     });
