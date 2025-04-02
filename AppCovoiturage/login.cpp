@@ -26,6 +26,11 @@ LogIn::LogIn(QWidget *parent)
                 PassengerHomePage* homePage = new PassengerHomePage();
                 homePage->show();
                 this->hide();
+            }else if(user.getRole() == "Driver"){
+                DriverHomePage* homePage = new DriverHomePage(&user);
+                homePage->show();
+                this->hide();
+
             }
 
         }else{

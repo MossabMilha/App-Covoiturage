@@ -11,25 +11,33 @@ CONFIG += c++17
 SOURCES += \
     checkers.cpp \
     databasemanager.cpp \
+    drivercreatetrip.cpp \
+    driverhomepage.cpp \
     encryption.cpp \
     login.cpp \
     main.cpp \
     passengerhomepage.cpp \
     signup.cpp \
     start.cpp \
+    traject.cpp \
     user.cpp
 
 HEADERS += \
     checkers.h \
     databasemanager.h \
+    drivercreatetrip.h \
+    driverhomepage.h \
     encryption.h \
     login.h \
     passengerhomepage.h \
     signup.h \
     start.h \
+    traject.h \
     user.h
 
 FORMS += \
+    drivercreatetrip.ui \
+    driverhomepage.ui \
     login.ui \
     passengerhomepage.ui \
     signup.ui \

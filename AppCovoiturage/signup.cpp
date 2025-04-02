@@ -77,7 +77,7 @@ SignUp::SignUp(QWidget *parent)
         QString password = ui->PasswordEntry->text();
         QString confirmPassword = ui->ConfirmPasswordEntry->text();
 
-        User newUser(firstName, lastName, username, email, password, "Passenger");
+        User newUser(firstName, lastName, username, email, password, "Driver");
         QMap<QString, QString> ErrorMessages;
         if (!validateInputs(newUser, confirmPassword, ErrorMessages)) {
             QString allErrors;

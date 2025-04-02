@@ -3,6 +3,7 @@
 #include "encryption.h"
 #include "user.h"
 #include "passengerhomepage.h"
+#include "driverhomepage.h"
 
 #include <QWidget>
 #include <QMessageBox>
