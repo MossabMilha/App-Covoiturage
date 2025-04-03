@@ -13,6 +13,8 @@
 #include <QDialog>
 #include <QDate>
 #include "user.h"
+#include "search.h"
+#include "passengersearchhistory.h"
 namespace Ui {
 class PassengerHomePage;
 }

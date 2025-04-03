@@ -16,6 +16,7 @@ int Traject::getAvailableSeats() const { return available_seats; }
 double Traject::getPrice() const { return price; }
 std::string Traject::getCarModel() const { return car_model; }
 std::string Traject::getStatus() const { return status; }
+
 Traject Traject::getTrajectById(int TrajectId) {
     QSqlDatabase db = QSqlDatabase::database();
 

@@ -18,6 +18,7 @@ SOURCES += \
     login.cpp \
     main.cpp \
     passengerhomepage.cpp \
+    passengersearchhistory.cpp \
     search.cpp \
     signup.cpp \
     start.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     encryption.h \
     login.h \
     passengerhomepage.h \
+    passengersearchhistory.h \
     search.h \
     signup.h \
     start.h \
@@ -45,6 +47,7 @@ FORMS += \
     driverhomepage.ui \
     login.ui \
     passengerhomepage.ui \
+    passengersearchhistory.ui \
     signup.ui \
     start.ui
 
