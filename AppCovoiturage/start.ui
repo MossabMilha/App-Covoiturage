@@ -53,7 +53,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Where You PDF Become Quiz</string>
+     <string>The Fastest Way To Your Place</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -75,7 +75,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Welcome To SmartQuizGen</string>
+     <string>Welcome To Carpooling</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignmentFlag::AlignCenter</set>

@@ -39,6 +39,11 @@ LogIn::LogIn(QWidget *parent)
             return;
         }
     });
+    connect(ui->SignUpButton, &QPushButton::clicked, this, [=]() {
+        SignUp* SignUpPage = new SignUp();
+        SignUpPage->show();
+        this->hide();
+    });
 }
 
 LogIn::~LogIn()
