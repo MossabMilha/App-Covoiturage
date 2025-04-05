@@ -34,6 +34,8 @@ PassengerHomePage::PassengerHomePage(User* user,QWidget *parent)
             if (newSearch.saveSearchToDB(searchId)) {
                 qDebug()<<searchId;
                 QMessageBox::information(this, "Success", "🎉 Search Created Successfully!");
+                //Calling The Script
+
             } else {
                 QMessageBox::warning(this, "Database Error", "Failed to save the search to the database.");
             }
