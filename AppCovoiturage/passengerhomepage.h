@@ -15,6 +15,7 @@
 #include "user.h"
 #include "search.h"
 #include "passengersearchhistory.h"
+#include "passengershowsearchresult.h"
 namespace Ui {
 class PassengerHomePage;
 }
