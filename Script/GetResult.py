@@ -54,22 +54,22 @@ def get_matching_traject_ids(search_id):
         ]
 
         prompt = f"""
-You are a smart assistant for a carpooling app. Your job is to match a user's search with the best available carpooling trajects and return the IDs of the matching trajects as a JSON array.
-
-### Search request:
-{json.dumps(search_input, indent=2)}
-
-### Available trajects:
-{json.dumps(trajects, indent=2)}
-
-### Matching rules:
-- Prefer exact matches on 'depart', 'destination', and 'date'.
-- Consider available_seats and price_limit as constraints.
-- If there is **no exact match**, return **-1 as the first element**, followed by the most similar options.
-- If exact matches exist, include them first, followed by the most similar suggestions.
-- Return at most 10 results in total.
-- Return the result as a **valid JSON array** with the traject IDs (for example: `[1, 2, 3]`).
-"""
+                    You are a smart assistant for a carpooling app. Your job is to match a user's search with the best available carpooling trajects and return the IDs of the matching trajects as a JSON array.
+                    
+                    ### Search request:
+                    {json.dumps(search_input, indent=2)}
+                    
+                    ### Available trajects:
+                    {json.dumps(trajects, indent=2)}
+                    
+                    ### Matching rules:
+                    - Prefer exact matches on 'depart', 'destination', and 'date'.
+                    - Consider available_seats and price_limit as constraints.
+                    - If there is **no exact match**, return **-1 as the first element**, followed by the most similar options.
+                    - If exact matches exist, include it first and also include other similar suggestion.
+                    - Return at least 10 results.
+                    - Return the result as a **valid JSON array** with the traject IDs (for example: `[1, 2, 3]`).
+                    """
 
         response = model.generate_content(prompt)
         output = response.text.strip()
@@ -95,8 +95,8 @@ You are a smart assistant for a carpooling app. Your job is to match a user's se
 # Main execution
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        search_id = int(sys.argv[1])  # Get the search ID from the argument
+        search_id = int(sys.argv[1])
         result = get_matching_traject_ids(search_id)
-        print(result)  # Print only the final result
+        print(result)
     else:
         print("No search ID provided.")

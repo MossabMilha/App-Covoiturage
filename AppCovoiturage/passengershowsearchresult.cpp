@@ -1,141 +1,130 @@
 #include "passengershowsearchresult.h"
+#include "qforeach.h"
 #include "ui_passengershowsearchresult.h"
-#include <QProcess>
-#include <QDebug>
-#include <QVBoxLayout>
-#include <QScrollArea>
-#include <QPushButton>
-#include <QLabel>
-#include <QHBoxLayout>
 
-#include "traject.h"
+QList<int> PassengerShowSearchResult::getSearchResult(int searchId) {
+    QList<int> resultList;
+
+    // Define paths
+    QString currentDir = QCoreApplication::applicationDirPath();
+    QString scriptPath = currentDir + "/../../../../Script/GetResult.py";
+    QString pythonInterpreter = currentDir + "/../../../../Script/.venv/Scripts/python.exe";
+
+    // Setup the process
+    QProcess process;
+    QStringList arguments;
+    arguments << scriptPath << QString::number(searchId);
+
+    process.start(pythonInterpreter, arguments);
+    process.waitForFinished();
+
+    QByteArray output = process.readAllStandardOutput();
+    QByteArray errorOutput = process.readAllStandardError();
+
+    if (!errorOutput.isEmpty()) {
+        qDebug() << "Python error:" << errorOutput;
+    }
+
+    // Parse JSON result
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(output, &parseError);
+
+    if (parseError.error != QJsonParseError::NoError || !doc.isArray()) {
+        qDebug() << "JSON parse error:" << parseError.errorString();
+        return resultList; // Return empty list on error
+    }
+
+    QJsonArray jsonArray = doc.array();
+    for (const QJsonValue& val : jsonArray) {
+        if (val.isDouble()) {
+            resultList.append(val.toInt());
+        }
+    }
+
+    return resultList;
+}
 
 PassengerShowSearchResult::PassengerShowSearchResult(User* user, int searchId, QWidget *parent)
     : QWidget(parent), ui(new Ui::PassengerShowSearchResult)
 {
-    // Create layout for the main window before using it
+    ui->setupUi(this);
+
+    QList<int> resultList = getSearchResult(searchId);
+    qDebug()<< resultList;
+
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-    // Initially hide the UI elements until the Python script is done
-    this->setVisible(false);
+    // Scroll area
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
 
-    // Start Python script with search ID as argument
-    QProcess *process = new QProcess(this);
+    // Container for items
+    QWidget* container = new QWidget(this);
+    QVBoxLayout* layout = new QVBoxLayout(container);
+    if (!resultList.isEmpty() && resultList.first() == -1) {
+        QMessageBox::information(this, "No Exact Match",
+                                 "No exact traject found for your search.\nHere are some similar suggestions.");
 
-    QString currentDir = QCoreApplication::applicationDirPath();
-    QString script_path = currentDir + "/../../../../Script/GetResult.py";
-    QString pythonInterpreter = "C:/Users/PC/Desktop/oumayma/Projects/AppCovoiturageProject/Script/.venv/Scripts/python.exe";  // Path to your Python virtual environment
-    qDebug() << "Starting Python script at: " << script_path;
 
-    connect(process, &QProcess::readyReadStandardOutput, [=]() {
-        QString output = process->readAllStandardOutput();
-        qDebug() << "Python Output:" << output;
+        resultList.removeFirst();
+    }
+    for (auto& trajectId : resultList) {
+        Traject traject = Traject::getTrajectById(trajectId);
 
-        // Parse output, remove square brackets and split by commas
-        QStringList trajectIds = output.trimmed().mid(1, output.length() - 2).split(',', Qt::SkipEmptyParts);
-        qDebug() << "Parsed Traject IDs:" << trajectIds;
+        QWidget* trajectWidget = new QWidget(this);
+        QHBoxLayout* hLayout = new QHBoxLayout(trajectWidget);
 
-        if (trajectIds.isEmpty()) {
-            QLabel* noResultsLabel = new QLabel("No results found.", this);
-            mainLayout->addWidget(noResultsLabel);
-        }
+        // Left: details
+        QVBoxLayout* detailsLayout = new QVBoxLayout();
 
-        // Create a scrollable area to hold the search history items
-        QScrollArea* scrollArea = new QScrollArea(this);
-        scrollArea->setWidgetResizable(true);
+        QLabel* routeLabel = new QLabel(
+            QString::fromStdString(traject.getDepart()) + " ➝ " +
+                QString::fromStdString(traject.getDestination()), trajectWidget
+            );
 
-        // Container widget inside the scroll area
-        QWidget* container = new QWidget(this);
-        QVBoxLayout* layout = new QVBoxLayout(container);
+        QLabel* dateTimeLabel = new QLabel(
+            QString::fromStdString(traject.getDateTime()), trajectWidget
+            );
 
-        // Loop through each trajectId in the output
-        for (const QString &trajectIdStr : trajectIds) {
-            bool ok;
-            int trajectId = trajectIdStr.trimmed().toInt(&ok);  // Ensure trimming spaces
-            if (!ok || trajectId == -1) {
-                qDebug() << "Skipping invalid or excluded Traject ID:" << trajectIdStr;
-                continue;
-            }
+        QLabel* seatsLabel = new QLabel(
+            "Available Seats: " + QString::number(traject.getAvailableSeats()), trajectWidget
+            );
 
-            // Get the traject by ID
-            Traject traject = Traject::getTrajectById(trajectId);
-            if (traject.getId() == 0) {
-                qDebug() << "Error: No traject found with ID:" << trajectId;
-                continue;  // Skip if traject not found
-            }
+        QLabel* priceLabel = new QLabel(
+            "Price: " + QString::number(traject.getPrice()) + " MAD", trajectWidget
+            );
 
-            qDebug() << "Creating widget for Traject ID:" << trajectId;  // Debug line to check if this is called
+        QLabel* carLabel = new QLabel(
+            "Car Model: " + QString::fromStdString(traject.getCarModel()), trajectWidget
+            );
 
-            // Create widget for traject details
-            QWidget* searchWidget = new QWidget(this);
-            QHBoxLayout* hLayout = new QHBoxLayout(searchWidget);
+        detailsLayout->addWidget(routeLabel);
+        detailsLayout->addWidget(dateTimeLabel);
+        detailsLayout->addWidget(seatsLabel);
+        detailsLayout->addWidget(priceLabel);
+        detailsLayout->addWidget(carLabel);
 
-            // Left section (Details)
-            QVBoxLayout* detailsLayout = new QVBoxLayout();
-            QLabel* routeLabel = new QLabel(
-                QString::fromStdString(traject.getDepart()) + " ➝ " +
-                    QString::fromStdString(traject.getDestination()), searchWidget
-                );
+        // Right: button
+        QPushButton* reserveButton = new QPushButton("Reserve", trajectWidget);
+        reserveButton->setFixedWidth(100);
 
-            QLabel* dateTimeLabel = new QLabel(
-                QString::fromStdString(traject.getDateTime()), searchWidget
-                );
+        connect(reserveButton, &QPushButton::clicked, this, [=]() {
 
-            QLabel* availableSeatsLabel = new QLabel(
-                "Available Seats: " + QString::number(traject.getAvailableSeats()), searchWidget
-                );
+        });
 
-            QLabel* priceLabel = new QLabel(
-                "Price: " + QString::number(traject.getPrice(), 'f', 2), searchWidget
-                );
+        hLayout->addLayout(detailsLayout);
+        hLayout->addStretch();
+        hLayout->addWidget(reserveButton, 0, Qt::AlignVCenter);
 
-            detailsLayout->addWidget(routeLabel);
-            detailsLayout->addWidget(dateTimeLabel);
-            detailsLayout->addWidget(availableSeatsLabel);
-            detailsLayout->addWidget(priceLabel);
-
-            // Button for "Research"
-            QPushButton* researchButton = new QPushButton("Research", searchWidget);
-            researchButton->setFixedWidth(100);
-
-            // Button Actions
-            connect(researchButton, &QPushButton::clicked, this, [=]() {
-                qDebug() << "Research button clicked for Traject ID: " << traject.getId();
-                // Implement logic when the "Research" button is clicked
-            });
-
-            // Layout adjustments
-            hLayout->addLayout(detailsLayout);
-            hLayout->addStretch();
-            hLayout->addWidget(researchButton, 0, Qt::AlignVCenter);
-
-            searchWidget->setLayout(hLayout);
-            layout->addWidget(searchWidget);
-        }
-
-        container->setLayout(layout);
-        scrollArea->setWidget(container);
-
-        // Add scroll area to the main layout
-        mainLayout->addWidget(scrollArea);
-        setLayout(mainLayout);
-
-        // After processing the data, show the UI
-        this->setVisible(true);  // Show the UI once data is processed
-    });
-
-    connect(process, &QProcess::errorOccurred, [=](QProcess::ProcessError error) {
-        qDebug() << "Error occurred:" << error;
-        qDebug() << "Error string:" << process->errorString();
-    });
-
-    if (!process->startDetached(pythonInterpreter, QStringList() << script_path << QString::number(searchId))) {
-        qDebug() << "Failed to start Python script!";
-    } else {
-        qDebug() << "Python script started successfully!";
+        trajectWidget->setLayout(hLayout);
+        layout->addWidget(trajectWidget);
     }
 
-    ui->setupUi(this);
+    container->setLayout(layout);
+    scrollArea->setWidget(container);
+
+    mainLayout->addWidget(scrollArea);
+    setLayout(mainLayout);
 }
 
 
