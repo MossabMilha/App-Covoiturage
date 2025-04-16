@@ -1,21 +1,34 @@
 #include "passengersearchhistory.h"
 #include "ui_passengersearchhistory.h"
+#include "passengerhomepage.h"
 
 PassengerSearchHistory::PassengerSearchHistory(User* user, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::PassengerSearchHistory)
+    ,m_user(user)
 {
     ui->setupUi(this);
 
-    // Get the user search history
+    // Récupération de l'historique de recherche de l'utilisateur
     std::vector<Search> UserSearch = Search::getUserSearch(user->getId());
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-    // Scrollable area to hold the search history items
+    // 🔙 Bouton de retour
+    QPushButton* backButton = new QPushButton("← Retour", this);
+    backButton->setFixedWidth(100);
+    mainLayout->addWidget(backButton, 0, Qt::AlignLeft);
+
+    // ⚡ Connexion du bouton de retour
+    connect(backButton, &QPushButton::clicked, this, [=]() {
+        PassengerHomePage* homepage = new PassengerHomePage(user);
+        homepage->show();
+        this->close(); // Fermer la page actuelle
+    });
+
+    // 🧾 Zone de scroll
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
 
-    // Container widget inside the scroll area
     QWidget* container = new QWidget(this);
     QVBoxLayout* layout = new QVBoxLayout(container);
 
@@ -23,7 +36,6 @@ PassengerSearchHistory::PassengerSearchHistory(User* user, QWidget *parent)
         QWidget* searchWidget = new QWidget(this);
         QHBoxLayout* hLayout = new QHBoxLayout(searchWidget);
 
-        // Left section (Details)
         QVBoxLayout* detailsLayout = new QVBoxLayout();
         QLabel* routeLabel = new QLabel(
             QString::fromStdString(search.getDepart()) + " ➝ " +
@@ -42,16 +54,53 @@ PassengerSearchHistory::PassengerSearchHistory(User* user, QWidget *parent)
         detailsLayout->addWidget(dateTimeLabel);
         detailsLayout->addWidget(searchTimeLabel);
 
-        // Button for "Research"
         QPushButton* researchButton = new QPushButton("Research", searchWidget);
         researchButton->setFixedWidth(100);
 
-        // Button Actions (You can modify this to do whatever action is needed when clicking the button)
-        connect(researchButton, &QPushButton::clicked, this, [=]() {
-            qDebug()<< "YOw";
+        connect(researchButton, &QPushButton::clicked, this, [this, search]() {
+            try {
+                // 1. Vérification de l'utilisateur
+                if (!m_user) {
+                    QMessageBox::warning(this, "Error", "User not valid");
+                    return;
+                }
+
+                // 2. Création de la nouvelle recherche avec les bonnes méthodes
+                int searchId = -1;
+                Search newSearch(0,
+                                 m_user->getId(),
+                                 search.getDepart(),
+                                 search.getDestination(),
+                                 search.getSeats(),       // Méthode correcte
+                                 search.getPriceLimit(),  // Méthode correcte
+                                 QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss").toStdString(),
+                                 search.getDateTime());
+
+                // 3. Validation et sauvegarde
+                QString error;
+                if (!newSearch.isValid(&error)) {
+                    QMessageBox::warning(this, "Validation Error", error);
+                    return;
+                }
+
+                if (!newSearch.saveSearchToDB(searchId)) {
+                    QMessageBox::warning(this, "Database Error", "Failed to save search");
+                    return;
+                }
+
+                // 4. Affichage des résultats
+                PassengerShowSearchResult* resultPage = new PassengerShowSearchResult(m_user, searchId);
+                resultPage->show();
+                this->close();
+            }
+            catch (const std::exception& e) {
+                QMessageBox::critical(this, "Exception", e.what());
+            }
+            catch (...) {
+                QMessageBox::critical(this, "Error", "Unknown error occurred");
+            }
         });
 
-        // Layout adjustments
         hLayout->addLayout(detailsLayout);
         hLayout->addStretch();
         hLayout->addWidget(researchButton, 0, Qt::AlignVCenter);
@@ -63,11 +112,10 @@ PassengerSearchHistory::PassengerSearchHistory(User* user, QWidget *parent)
     container->setLayout(layout);
     scrollArea->setWidget(container);
 
-    // Add scroll area to the main layout
+    // Ajout de la zone scrollable au layout principal
     mainLayout->addWidget(scrollArea);
     setLayout(mainLayout);
 }
-
 
 PassengerSearchHistory::~PassengerSearchHistory()
 {

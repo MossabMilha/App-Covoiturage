@@ -21,6 +21,7 @@ public:
 
 private:
     Ui::DriverHomePage *ui;
+     User* currentUser;
 };
 
 #endif // DRIVERHOMEPAGE_H

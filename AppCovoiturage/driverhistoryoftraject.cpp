@@ -1,5 +1,6 @@
 #include "driverhistoryoftraject.h"
 #include "ui_driverhistoryoftraject.h"
+#include "driverhomepage.h"
 
 DriverHistoryOfTraject::DriverHistoryOfTraject(User* user, QWidget *parent)
     : QWidget(parent)
@@ -18,7 +19,7 @@ DriverHistoryOfTraject::DriverHistoryOfTraject(User* user, QWidget *parent)
     QWidget* container = new QWidget(this);
     QVBoxLayout* layout = new QVBoxLayout(container);
 
-    for (auto& traject : driverTrajects) {  // Use non-const reference here
+    for (auto& traject : driverTrajects) {
         QWidget* trajectWidget = new QWidget(this);
         QHBoxLayout* hLayout = new QHBoxLayout(trajectWidget);
 
@@ -41,7 +42,7 @@ DriverHistoryOfTraject::DriverHistoryOfTraject(User* user, QWidget *parent)
         detailsLayout->addWidget(dateTimeLabel);
         detailsLayout->addWidget(statusLabel);
 
-        // Buttons (Only shown under specific conditions)
+        // Buttons
         QPushButton* completeButton = new QPushButton("Completed", trajectWidget);
         completeButton->setFixedWidth(100);
         completeButton->setVisible(traject.getStatus() == "confirmed");
@@ -49,10 +50,11 @@ DriverHistoryOfTraject::DriverHistoryOfTraject(User* user, QWidget *parent)
         QPushButton* cancelButton = new QPushButton("Cancel", trajectWidget);
         cancelButton->setFixedWidth(100);
         cancelButton->setVisible(traject.getStatus() != "cancelled" && traject.getStatus() != "completed");
+
         int trajectid = traject.getId();
-        // Button Actions
-        connect(cancelButton, &QPushButton::clicked, this, [this,trajectid, statusLabel, completeButton, cancelButton]() {
-            Traject traject = Traject::getTrajectById(trajectid); // Add debug information
+
+        connect(cancelButton, &QPushButton::clicked, this, [this, trajectid, statusLabel, completeButton, cancelButton]() {
+            Traject traject = Traject::getTrajectById(trajectid);
             traject.setStatus("canceled");
             traject.saveTrajectToDB();
             statusLabel->setText("Status: cancelled");
@@ -60,16 +62,7 @@ DriverHistoryOfTraject::DriverHistoryOfTraject(User* user, QWidget *parent)
             completeButton->setVisible(false);
         });
 
-        // connect(cancelButton, &QPushButton::clicked, this, [this, trajectid, statusLabel, completeButton, cancelButton]() {
-        //     Traject traject = Traject::getTrajectById(trajectid);
-        //     traject.setStatus("cancelled");
-        //     traject.saveTrajectToDB();
-        //     statusLabel->setText("Status: cancelled");
-        //     cancelButton->setVisible(false);
-        //     completeButton->setVisible(false);
-        // });
-
-        // Layout adjustments
+        // Layout for one traject
         hLayout->addLayout(detailsLayout);
         hLayout->addStretch();
         hLayout->addWidget(completeButton, 0, Qt::AlignVCenter);
@@ -82,12 +75,18 @@ DriverHistoryOfTraject::DriverHistoryOfTraject(User* user, QWidget *parent)
     container->setLayout(layout);
     scrollArea->setWidget(container);
 
-    // Add scroll area to the main layout
+    // Add scroll area and back button to the main layout
     mainLayout->addWidget(scrollArea);
+    mainLayout->addWidget(ui->backBtn); // ✅ Affiche le bouton Retour
     setLayout(mainLayout);
+
+    // Action du bouton backBtn
+    connect(ui->backBtn, &QPushButton::clicked, this, [this, user]() {
+        DriverHomePage* homePage = new DriverHomePage(user, nullptr);
+        homePage->show();
+        this->hide();
+    });
 }
-
-
 
 DriverHistoryOfTraject::~DriverHistoryOfTraject()
 {

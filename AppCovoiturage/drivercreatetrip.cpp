@@ -1,5 +1,6 @@
 #include "drivercreatetrip.h"
 #include "ui_drivercreatetrip.h"
+#include "driverhomepage.h"
 
 DriverCreateTrip::DriverCreateTrip(User* user, QWidget *parent)
     : QWidget(parent)
@@ -37,6 +38,13 @@ DriverCreateTrip::DriverCreateTrip(User* user, QWidget *parent)
             // If invalid, show the error messages
             QMessageBox::warning(this, "Validation Error", error);
         }
+    });
+
+    // Action du bouton backBtn
+    connect(ui->backBtn, &QPushButton::clicked, this, [this, user]() {
+        DriverHomePage* homePage = new DriverHomePage(user, nullptr);
+        homePage->show();
+        this->hide();
     });
 }
 

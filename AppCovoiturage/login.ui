@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>411</width>
+    <width>417</width>
     <height>587</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="LoginButton">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>120</x>
      <y>380</y>
      <width>190</width>
      <height>25</height>
@@ -41,7 +41,7 @@
   <widget class="QPushButton" name="ForgetPasswordButton">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>120</x>
      <y>410</y>
      <width>190</width>
      <height>25</height>
@@ -66,9 +66,9 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>150</y>
-     <width>409</width>
+     <x>10</x>
+     <y>160</y>
+     <width>331</width>
      <height>81</height>
     </rect>
    </property>
@@ -76,12 +76,24 @@
     <property name="bottomMargin">
      <number>10</number>
     </property>
-    <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
+    <item>
      <widget class="QLabel" name="UsernameLabel">
       <property name="minimumSize">
        <size>
         <width>120</width>
         <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>200</width>
+        <height>25</height>
        </size>
       </property>
       <property name="font">
@@ -98,7 +110,7 @@
       </property>
      </widget>
     </item>
-    <item alignment="Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter">
+    <item>
      <widget class="QLineEdit" name="UsernameEntry">
       <property name="enabled">
        <bool>true</bool>
@@ -106,13 +118,13 @@
       <property name="minimumSize">
        <size>
         <width>200</width>
-        <height>0</height>
+        <height>25</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>250</width>
-        <height>16777215</height>
+        <width>200</width>
+        <height>25</height>
        </size>
       </property>
      </widget>
@@ -122,17 +134,17 @@
   <widget class="QWidget" name="horizontalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>240</y>
-     <width>409</width>
-     <height>81</height>
+     <x>10</x>
+     <y>250</y>
+     <width>401</width>
+     <height>71</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <property name="bottomMargin">
      <number>10</number>
     </property>
-    <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
+    <item>
      <widget class="QLabel" name="PasswordLabel">
       <property name="minimumSize">
        <size>
@@ -151,13 +163,32 @@
       </property>
      </widget>
     </item>
-    <item alignment="Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter">
+    <item>
      <widget class="QLineEdit" name="PasswordEntry">
       <property name="minimumSize">
        <size>
         <width>200</width>
-        <height>0</height>
+        <height>25</height>
        </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>150</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="showpass">
+      <property name="maximumSize">
+       <size>
+        <width>150</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>👁️</string>
       </property>
      </widget>
     </item>
@@ -166,9 +197,9 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>30</x>
      <y>20</y>
-     <width>411</width>
+     <width>361</width>
      <height>80</height>
     </rect>
    </property>
@@ -192,7 +223,7 @@
   <widget class="QPushButton" name="SignUpButton">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>120</x>
      <y>440</y>
      <width>190</width>
      <height>25</height>

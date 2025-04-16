@@ -28,6 +28,7 @@ public:
 
 private:
     Ui::PassengerSearchHistory *ui;
+     User* m_user;
 };
 
 #endif // PASSENGERSEARCHHISTORY_H
